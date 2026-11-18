@@ -1,14 +1,14 @@
-# AgentPass
+# AgenTera
 
 **The on-chain operator badge for verified Agent ID holders — claim once, prove you are a real agent operator, forever.**
 
-AgentPass is a free, soulbound (non-transferable) ERC-721 badge on BNB Chain. Only an address that holds an **Agent ID** can claim it: the contract verifies ownership on-chain against the official Agent ID contract before minting — no server, no manual review, no trust required. A built-in daily check-in lets active agent operators build a public activity streak, turning the badge into a lightweight reputation layer for agent-operated wallets.
+AgenTera is a free, soulbound (non-transferable) ERC-721 badge on BNB Chain. Only an address that holds an **Agent ID** can claim it: the contract verifies ownership on-chain against the official Agent ID contract before minting — no server, no manual review, no trust required. A built-in daily check-in lets active agent operators build a public activity streak, turning the badge into a lightweight reputation layer for agent-operated wallets.
 
 Built for the **Binance Wallet × BNB Chain Agent ID Hackathon** (submission period 18 Nov – 9 Dec 2026).
 
 ## How Agent ID is used
 
-Agent ID is the core access-control mechanism of AgentPass:
+Agent ID is the core access-control mechanism of AgenTera:
 
 - The official Agent ID contract on BNB Chain is `0x60b9262456de011f7d15a54cdd8c48baaa8b022f` (SPACE ID Agent ID, ERC-721, non-transferable).
 - `claimBadge()` calls `balanceOf(msg.sender)` on that contract and reverts unless the result is greater than 0.
@@ -16,7 +16,7 @@ Agent ID is the core access-control mechanism of AgentPass:
 
 ## Contract
 
-`src/AgentPass.sol` — a single, dependency-free Solidity 0.8.24 contract.
+`src/AgenTera.sol` — a single, dependency-free Solidity 0.8.24 contract.
 
 | Function | Behaviour |
 |---|---|
@@ -32,7 +32,7 @@ Agent ID is the core access-control mechanism of AgentPass:
 
 ## Tests
 
-Foundry test suite in `test/AgentPass.t.sol` (11 tests: claim gating, double-claim, soulbound reverts, check-in streaks, metadata, interfaces).
+Foundry test suite in `test/AgenTera.t.sol` (11 tests: claim gating, double-claim, soulbound reverts, check-in streaks, metadata, interfaces).
 
 ```bash
 forge build
@@ -47,7 +47,7 @@ forge test
 
 ## Operators
 
-AgentPass is operated by the team behind three Agent IDs that run autonomously on BNB Chain under strict safety gates (contract verification, gas prechecks, explicit user confirmation before any asset movement):
+AgenTera is operated by the team behind three Agent IDs that run autonomously on BNB Chain under strict safety gates (contract verification, gas prechecks, explicit user confirmation before any asset movement):
 
 - tiezu.ai — `0x601deb76808b5ed0b07FbD4d57ae6B04bAE6552A`
 - satoshii.ai — `0xc29E26ee254252Ac1090D9FaB5BeB5bB8Bd42b7e`

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.24;
 
-import {AgentPass, IAgentID} from "../src/AgentPass.sol";
+import {AgenTera, IAgentID} from "../src/AgenTera.sol";
 
 // ── Minimal Foundry cheatcode interface (no forge-std dependency) ──────────
 interface Vm {
@@ -41,9 +41,9 @@ contract MockAgentID is IAgentID {
     }
 }
 
-contract AgentPassTest is TestBase {
+contract AgenTeraTest is TestBase {
     MockAgentID internal mockID;
-    AgentPass internal pass;
+    AgenTera internal pass;
 
     address internal alice = address(0xA11CE); // holds an Agent ID
     address internal bob = address(0xB0B); // holds no Agent ID
@@ -51,7 +51,7 @@ contract AgentPassTest is TestBase {
 
     function setUp() public {
         mockID = new MockAgentID();
-        pass = new AgentPass(address(mockID));
+        pass = new AgenTera(address(mockID));
         mockID.setBalance(alice, 1);
         mockID.setBalance(carol, 1);
     }
@@ -69,7 +69,7 @@ contract AgentPassTest is TestBase {
 
     function test_ClaimByNonHolderReverts() public {
         vm.prank(bob);
-        vm.expectRevert(AgentPass.NoAgentID.selector);
+        vm.expectRevert(AgenTera.NoAgentID.selector);
         pass.claimBadge();
     }
 
@@ -77,7 +77,7 @@ contract AgentPassTest is TestBase {
         vm.prank(alice);
         pass.claimBadge();
         vm.prank(alice);
-        vm.expectRevert(AgentPass.AlreadyClaimed.selector);
+        vm.expectRevert(AgenTera.AlreadyClaimed.selector);
         pass.claimBadge();
     }
 
@@ -95,7 +95,7 @@ contract AgentPassTest is TestBase {
         vm.prank(alice);
         pass.claimBadge();
         vm.prank(alice);
-        vm.expectRevert(AgentPass.Soulbound.selector);
+        vm.expectRevert(AgenTera.Soulbound.selector);
         pass.transferFrom(alice, bob, 1);
     }
 
@@ -103,7 +103,7 @@ contract AgentPassTest is TestBase {
         vm.prank(alice);
         pass.claimBadge();
         vm.prank(alice);
-        vm.expectRevert(AgentPass.Soulbound.selector);
+        vm.expectRevert(AgenTera.Soulbound.selector);
         pass.approve(bob, 1);
     }
 
@@ -119,7 +119,7 @@ contract AgentPassTest is TestBase {
 
         // Same day again: revert
         vm.prank(alice);
-        vm.expectRevert(AgentPass.AlreadyCheckedInToday.selector);
+        vm.expectRevert(AgenTera.AlreadyCheckedInToday.selector);
         pass.checkIn();
 
         // Next day: streak 2
@@ -139,7 +139,7 @@ contract AgentPassTest is TestBase {
 
     function test_CheckInWithoutBadgeReverts() public {
         vm.prank(carol); // holds an Agent ID but never claimed the badge
-        vm.expectRevert(AgentPass.NoBadge.selector);
+        vm.expectRevert(AgenTera.NoBadge.selector);
         pass.checkIn();
     }
 
@@ -150,13 +150,13 @@ contract AgentPassTest is TestBase {
         assertTrue(pass.supportsInterface(0x01ffc9a7), "ERC-165 interface");
         bytes memory uri = bytes(pass.tokenURI(1));
         assertTrue(uri.length > 50, "tokenURI must be non-trivial");
-        vm.expectRevert(AgentPass.NonexistentToken.selector);
+        vm.expectRevert(AgenTera.NonexistentToken.selector);
         pass.ownerOf(999);
     }
 
     function test_ConstructorZeroAddressReverts() public {
-        vm.expectRevert(AgentPass.ZeroAddress.selector);
-        new AgentPass(address(0));
+        vm.expectRevert(AgenTera.ZeroAddress.selector);
+        new AgenTera(address(0));
     }
 
     function test_HoldsAgentIDView() public {

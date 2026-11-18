@@ -9,7 +9,7 @@ interface IAgentID {
     function balanceOf(address owner) external view returns (uint256);
 }
 
-/// @title AgentPass — the on-chain operator badge for verified Agent ID holders
+/// @title AgenTera — the on-chain operator badge for verified Agent ID holders
 /// @notice A free, soulbound (non-transferable) ERC-721 badge that can only be
 ///         claimed by an address that holds an Agent ID. Agent ID ownership is
 ///         verified on-chain against the official Agent ID contract at claim
@@ -18,10 +18,10 @@ interface IAgentID {
 ///         outside `claimBadge`, cannot pause, cannot take fees, and holds no
 ///         user funds. There is nothing to renounce because no privileged role
 ///         exists in the first place.
-contract AgentPass {
+contract AgenTera {
     // ── ERC-721 metadata ────────────────────────────────────────────────────
-    string public constant name = "AgentPass";
-    string public constant symbol = "APASS";
+    string public constant name = "AgenTera";
+    string public constant symbol = "ATERA";
 
     // ── Agent ID gate ───────────────────────────────────────────────────────
     IAgentID public immutable agentID;
@@ -58,7 +58,7 @@ contract AgentPass {
     }
 
     // ── Core: claim ─────────────────────────────────────────────────────────
-    /// @notice Claim the AgentPass badge. Requires holding an Agent ID.
+    /// @notice Claim the AgenTera badge. Requires holding an Agent ID.
     ///         One badge per address, free, non-transferable.
     function claimBadge() external returns (uint256 tokenId) {
         if (agentID.balanceOf(msg.sender) == 0) revert NoAgentID();
@@ -120,7 +120,7 @@ contract AgentPass {
         if (_ownerOf[tokenId] == address(0)) revert NonexistentToken();
         return string(
             abi.encodePacked(
-                "data:application/json;utf8,{\"name\":\"AgentPass Badge #",
+                "data:application/json;utf8,{\"name\":\"AgenTera Badge #",
                 _toString(tokenId),
                 "\",\"description\":\"Soulbound operator badge for verified Agent ID holders on BNB Chain. "
                 "Claimed only after on-chain verification against the official Agent ID contract.\","
