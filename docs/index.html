@@ -82,7 +82,7 @@
 <script src="https://cdn.jsdelivr.net/npm/ethers@6.13.4/dist/ethers.umd.min.js"></script>
 <script>
   // Filled in at deployment time:
-  const CONTRACT_ADDRESS = "0x0000000000000000000000000000000000000000";
+  const CONTRACT_ADDRESS = "0xC53ee3d1C9c2127108Fb45E5E5d9d2a623e3c681";
   const AGENT_ID_ADDRESS = "0x60b9262456de011f7d15a54cdd8c48baaa8b022f";
   const BSC_RPC = "https://bsc-dataseed.binance.org";
   const ABI = [
@@ -94,7 +94,7 @@
     "function checkIn()"
   ];
   const $ = (id) => document.getElementById(id);
-  const deployed = CONTRACT_ADDRESS !== "0x0000000000000000000000000000000000000000";
+  const deployed = CONTRACT_ADDRESS !== "0xC53ee3d1C9c2127108Fb45E5E5d9d2a623e3c681";
   let signer = null, account = null;
 
   $("contractLine").innerHTML = deployed

@@ -43,7 +43,7 @@ forge test
 
 - Network: BNB Chain (BSC mainnet, chainId 56)
 - Constructor argument: the Agent ID contract `0x60b9262456de011f7d15a54cdd8c48baaa8b022f`
-- Deployed address: *(added after deployment; source verified on BscScan)*
+- Deployed address: `0xC53ee3d1C9c2127108Fb45E5E5d9d2a623e3c681` — https://bscscan.com/address/0xC53ee3d1C9c2127108Fb45E5E5d9d2a623e3c681 (deployed 2026-11-18 via the standard CREATE2 factory; deploy tx `0xa705d91b93371485556e4c07d4941d6e03c711b340163843ba575c545adf1158`)
 
 ## Operators
 
