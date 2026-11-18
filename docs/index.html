@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AgenTera — The Official Stamp for Agent ID Holders</title>
+<meta name="description" content="AgenTera is a free, soulbound on-chain badge that only verified Agent ID holders can claim on BNB Chain. Agent ID ownership is checked directly against the official Agent ID contract.">
+<style>
+  :root { --bg:#0b0e14; --card:#121826; --line:#23304a; --text:#e8edf7; --muted:#93a1bd; --gold:#f0b90b; --teal:#2bd9c7; --red:#ff6b6b; }
+  * { box-sizing: border-box; }
+  body { margin:0; font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; background: var(--bg); color: var(--text); }
+  .wrap { max-width: 760px; margin: 0 auto; padding: 32px 20px 64px; }
+  header { text-align:center; padding: 28px 0 8px; }
+  .stamp { display:inline-block; border: 3px solid var(--gold); color: var(--gold); border-radius: 10px; padding: 10px 22px; font-weight: 800; letter-spacing: 3px; font-size: 30px; transform: rotate(-2deg); }
+  h1 { font-size: 20px; margin: 18px 0 6px; font-weight: 700; }
+  .tag { color: var(--muted); margin: 0 auto; max-width: 560px; line-height: 1.55; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 20px; margin-top: 22px; }
+  .card h2 { margin: 0 0 12px; font-size: 16px; }
+  .card p, .card li { color: var(--muted); line-height: 1.6; font-size: 14.5px; }
+  .card ul { margin: 8px 0; padding-left: 18px; }
+  .stats { display:flex; gap:12px; flex-wrap: wrap; }
+  .stat { flex:1; min-width: 150px; background:#0d1220; border:1px solid var(--line); border-radius: 10px; padding: 14px; text-align:center; }
+  .stat b { display:block; font-size: 24px; color: var(--teal); }
+  .stat span { color: var(--muted); font-size: 12.5px; }
+  button { background: var(--gold); color:#111; border:0; border-radius: 10px; padding: 13px 20px; font-size: 15px; font-weight: 700; cursor: pointer; width: 100%; margin-top: 10px; }
+  button.secondary { background: transparent; color: var(--teal); border: 1px solid var(--teal); }
+  button:disabled { opacity: .45; cursor: not-allowed; }
+  #status { margin-top: 12px; font-size: 14px; line-height: 1.55; color: var(--muted); word-break: break-word; }
+  .mono { font-family: ui-monospace, monospace; font-size: 12.5px; }
+  a { color: var(--teal); }
+  footer { text-align:center; color: var(--muted); font-size: 12.5px; margin-top: 30px; line-height: 1.7; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="stamp">AGENTERA</div>
+    <h1>The official stamp for Agent ID holders</h1>
+    <p class="tag">AgenTera is a free, soulbound on-chain badge on BNB Chain that only a verified
+    <b>Agent ID</b> holder can claim. Ownership is checked directly against the official Agent ID
+    contract — no server, no manual review, no trust required.</p>
+  </header>
+
+  <div class="card">
+    <h2>Live on BNB Chain</h2>
+    <div class="stats">
+      <div class="stat"><b id="statClaimers">–</b><span>Badges claimed</span></div>
+      <div class="stat"><b id="statYou">–</b><span>Your badge</span></div>
+      <div class="stat"><b id="statStreak">–</b><span>Your check-in streak</span></div>
+    </div>
+    <p id="contractLine" class="mono"></p>
+    <button id="btnConnect">Connect Wallet</button>
+    <button id="btnClaim" class="secondary" disabled>Claim AgenTera Badge</button>
+    <button id="btnCheckIn" class="secondary" disabled>Daily Check-In</button>
+    <div id="status">Connect any BNB Chain wallet to check your eligibility. Only wallets holding an Agent ID can claim.</div>
+  </div>
+
+  <div class="card">
+    <h2>How it works</h2>
+    <ul>
+      <li><b>Agent ID is the key.</b> The claim function calls <span class="mono">balanceOf</span> on the official Agent ID contract (<span class="mono">0x60b9…022f</span>). If your wallet holds an Agent ID, you can claim — otherwise the transaction reverts.</li>
+      <li><b>One badge, forever yours.</b> The badge is a soulbound ERC-721: one per address, non-transferable, free. Gas only, paid by the claimer.</li>
+      <li><b>Stay active.</b> Badge holders can check in once a day to build a public activity streak — a lightweight reputation layer for agent-operated wallets.</li>
+      <li><b>No owner, no admin, no fees.</b> The contract cannot mint outside the claim function, cannot pause, and holds no user funds. <a href="https://github.com/ibrahimskertt/agentera">Source code is public</a> and verified on BscScan.</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>Built by agent operators</h2>
+    <p>AgenTera is operated by the team behind three Agent IDs that run autonomously on BNB Chain
+    under strict safety gates — contract verification, gas prechecks, and explicit user confirmation
+    before any asset movement: <b>tiezu.ai</b>, <b>satoshii.ai</b>, and <b>alexandro.ai</b>.
+    Submitted to the Binance Wallet × BNB Chain Agent ID Hackathon.</p>
+  </div>
+
+  <footer>
+    AgenTera (ATERA) · BNB Chain · The badge is a credential only — it promises no returns and has no monetary value.<br>
+    Agent ID contract: <span class="mono">0x60b9262456de011f7d15a54cdd8c48baaa8b022f</span>
+  </footer>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/ethers@6.13.4/dist/ethers.umd.min.js"></script>
+<script>
+  // Filled in at deployment time:
+  const CONTRACT_ADDRESS = "0x0000000000000000000000000000000000000000";
+  const AGENT_ID_ADDRESS = "0x60b9262456de011f7d15a54cdd8c48baaa8b022f";
+  const BSC_RPC = "https://bsc-dataseed.binance.org";
+  const ABI = [
+    "function totalClaimers() view returns (uint256)",
+    "function hasBadge(address) view returns (bool)",
+    "function holdsAgentID(address) view returns (bool)",
+    "function currentStreak(address) view returns (uint256)",
+    "function claimBadge() returns (uint256)",
+    "function checkIn()"
+  ];
+  const $ = (id) => document.getElementById(id);
+  const deployed = CONTRACT_ADDRESS !== "0x0000000000000000000000000000000000000000";
+  let signer = null, account = null;
+
+  $("contractLine").innerHTML = deployed
+    ? 'AgenTera contract: <a href="https://bscscan.com/address/' + CONTRACT_ADDRESS + '" target="_blank" rel="noopener">' + CONTRACT_ADDRESS + '</a>'
+    : 'AgenTera contract: deployment in progress — address will appear here.';
+
+  async function refreshPublic() {
+    if (!deployed) return;
+    try {
+      const provider = new ethers.JsonRpcProvider(BSC_RPC);
+      const c = new ethers.Contract(CONTRACT_ADDRESS, ABI, provider);
+      $("statClaimers").textContent = (await c.totalClaimers()).toString();
+    } catch (e) { /* read-only stats are best-effort */ }
+  }
+
+  async function refreshMine() {
+    if (!deployed || !account) return;
+    const provider = new ethers.JsonRpcProvider(BSC_RPC);
+    const c = new ethers.Contract(CONTRACT_ADDRESS, ABI, provider);
+    const [has, streak] = await Promise.all([c.hasBadge(account), c.currentStreak(account)]);
+    $("statYou").textContent = has ? "Claimed ✓" : "Not yet";
+    $("statStreak").textContent = streak.toString();
+    $("btnClaim").disabled = has;
+    $("btnCheckIn").disabled = !has;
+  }
+
+  $("btnConnect").onclick = async () => {
+    if (!window.ethereum) { $("status").textContent = "No wallet found. Open this page in a wallet browser (e.g. Binance Web3 Wallet or MetaMask)."; return; }
+    try {
+      const provider = new ethers.BrowserProvider(window.ethereum);
+      signer = await provider.getSigner();
+      account = await signer.getAddress();
+      const net = await provider.getNetwork();
+      if (net.chainId !== 56n) {
+        try { await window.ethereum.request({ method: "wallet_switchEthereumChain", params: [{ chainId: "0x38" }] }); }
+        catch (e) { $("status").textContent = "Please switch your wallet to BNB Chain (chainId 56)."; return; }
+      }
+      $("btnConnect").textContent = "Connected: " + account.slice(0, 6) + "…" + account.slice(-4);
+      if (!deployed) { $("status").textContent = "Wallet connected. The AgenTera contract is being deployed — claiming opens shortly."; return; }
+      const c = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
+      const holds = await c.holdsAgentID(account);
+      $("status").textContent = holds
+        ? "Your wallet holds an Agent ID ✓ — you can claim the AgenTera badge."
+        : "Your wallet does not hold an Agent ID, so it cannot claim the badge. Agent IDs are claimed inside the Binance app.";
+      await refreshMine();
+    } catch (e) { $("status").textContent = "Connection failed: " + (e.message || e); }
+  };
+
+  $("btnClaim").onclick = async () => {
+    try {
+      const c = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
+      $("status").textContent = "Sending claim transaction — please confirm in your wallet…";
+      const tx = await c.claimBadge();
+      await tx.wait();
+      $("status").innerHTML = 'Badge claimed ✓ Transaction: <a href="https://bscscan.com/tx/' + tx.hash + '" target="_blank" rel="noopener">' + tx.hash + '</a>';
+      await refreshPublic(); await refreshMine();
+    } catch (e) { $("status").textContent = "Claim failed: " + (e.shortMessage || e.message || e); }
+  };
+
+  $("btnCheckIn").onclick = async () => {
+    try {
+      const c = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
+      $("status").textContent = "Sending check-in — please confirm in your wallet…";
+      const tx = await c.checkIn();
+      await tx.wait();
+      $("status").innerHTML = 'Checked in ✓ Transaction: <a href="https://bscscan.com/tx/' + tx.hash + '" target="_blank" rel="noopener">' + tx.hash + '</a>';
+      await refreshMine();
+    } catch (e) { $("status").textContent = "Check-in failed: " + (e.shortMessage || e.message || e); }
+  };
+
+  refreshPublic();
+</script>
+</body>
+</html>
